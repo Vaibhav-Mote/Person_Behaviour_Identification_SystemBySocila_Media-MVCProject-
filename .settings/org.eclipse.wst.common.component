@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+            
+    
+    <wb-module deploy-name="BehaviourMVCProject">
+                        
+        
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+                        
+        
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+                        
+        
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <dependent-module archiveName="CrudApplicationUsringJDBC-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/CrudApplicationUsringJDBC/CrudApplicationUsringJDBC">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="SpringJDBCApplicationContext-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/SpringJDBCApplicationContext/SpringJDBCApplicationContext">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ObjectDependencySpringCore-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ObjectDependencySpringCore/ObjectDependencySpringCore">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+                        
+        
+        <property name="java-output-path" value="/JensProject/target/classes"/>
+                
+        <property name="context-root" value="BehaviourMVCProject"/>
+                    
+    
+    </wb-module>
+        
+
+</project-modules>
