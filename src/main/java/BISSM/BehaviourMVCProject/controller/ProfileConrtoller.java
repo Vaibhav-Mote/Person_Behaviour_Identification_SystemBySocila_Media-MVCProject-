@@ -1,9 +1,12 @@
 package BISSM.BehaviourMVCProject.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +81,27 @@ public ModelAndView getChangeDataEditProfiePage(HttpServletRequest request,Map m
     	mv.addObject("userInfoModel",model);
     	mv.setViewName("editProfile");
     	return mv;
+
+}
+
+@RequestMapping("likepostprofile")
+public void isLikePost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	HttpSession session = request.getSession(false); // Get the current session
+	int registerid = (Integer) session.getAttribute("registerid");
+	int postid = Integer.parseInt(request.getParameter("postid"));
+	boolean b = postService.islikePost(registerid, postid);
+	PrintWriter out = response.getWriter();
+	if (b) {
+		int likeCount = postService.isgetLikeCount(postid);
+		out.print("<a href='#' class='likeicon' id='likeiconprofile" + postid
+				+ "'><i class='bi bi-heart-fill text-danger' onclick='likeUnlikePostprofile(" + postid + ")'></i>"
+				+ likeCount + "</a>");
+	} else {
+		int likeCount = postService.isgetLikeCount(postid);
+		out.print("<a href='#' class='likeicon' id='likeiconprofile" + postid
+				+ "'><i class='bi bi-heart-fill text-white' onclick='likeUnlikePostprofile(" + postid + ")'></i>"
+				+ likeCount + "</a>");
+	}
 
 }
 

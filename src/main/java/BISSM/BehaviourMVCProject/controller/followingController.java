@@ -19,31 +19,33 @@ public class followingController {
 	
 	@Autowired
 	userServiceImpl userSer;
-	
 	@RequestMapping("following")
 	public ModelAndView getFollowings(HttpServletRequest request) {
-		HttpSession session =request.getSession(false);
-		int registerid=(Integer)session.getAttribute("registerid");
-		List <UserInfoModel>list=userSer.isgetFollowingList(registerid);
-		ModelAndView mv=new ModelAndView();
-         mv.addObject("followingInfoList", list);
-         mv.setViewName("following");
-         return mv;
-		
-	}
-	
-	@RequestMapping("unfollow")
-	public ModelAndView getUnfollow(HttpServletRequest request) {
-	    HttpSession session = request.getSession(false);
-	    int userid = (Integer) session.getAttribute("registerid"); 
-	    int registerid = Integer.parseInt(request.getParameter("registerid")); 
-	    boolean unfollowSuccess = userSer.isUnfollowUser(registerid, userid);
-	    List<UserInfoModel> list = userSer.isgetFollowingList(userid);
+	    int registerid = Integer.parseInt(request.getParameter("registerid"));
+	    List<UserInfoModel> list = userSer.isgetFollowingList(registerid);
 	    ModelAndView mv = new ModelAndView();
+	    System.out.println(registerid);
 	    mv.addObject("followingInfoList", list);
+	    mv.addObject("registerid", registerid); // Store registerid here
 	    mv.setViewName("following");
 	    return mv;
 	}
+
+	@RequestMapping("unfollow")
+	public ModelAndView getUnfollow(HttpServletRequest request) {
+	    HttpSession session = request.getSession(false);
+	    int registerid = (Integer) session.getAttribute("registerid");
+	    int userid = Integer.parseInt(request.getParameter("registerid"));
+	    boolean unfollowSuccess = userSer.isRemoveFollower(registerid,userid);
+	    // After unfollowing, get the updated list of followings for userid
+	    List<UserInfoModel> list = userSer.isgetFollowingList(registerid);
+	    ModelAndView mv1 = new ModelAndView();
+	    mv1.addObject("followingInfoList", list);
+	    mv1.addObject("registerid", userid); // Store userid instead of registerid after unfollow
+	    mv1.setViewName("following");
+	    return mv1;
+	}
+
 
 	
 	

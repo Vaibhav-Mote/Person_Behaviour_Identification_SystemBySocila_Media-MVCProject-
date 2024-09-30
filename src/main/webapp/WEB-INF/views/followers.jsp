@@ -18,8 +18,10 @@
 <div class="followersContaint">
 
 <%
-List <UserInfoModel>list=(List)session.getAttribute("followerList");
-if(!list.isEmpty()){
+int sessionregisterid=(Integer)session.getAttribute("registerid");
+int parameterregisterid=Integer.parseInt(request.getParameter("registerid"));
+List <UserInfoModel>list=(List)request.getAttribute("followerList");
+if(!list.isEmpty()&&list!=null){
 %>
 <div class="followersmaindiv">
 <h2 id="headingFollowers">Followers</h2>
@@ -37,12 +39,32 @@ for(UserInfoModel m:list){
 <%=m.getName() %>
 
 </div>
+<%
+if(sessionregisterid==parameterregisterid){
+	
+%>
 <form action="removef" method="get">
     <input type="hidden" name="registerid" value="<%= m.getId() %>" />
     <div class="remove">
        <input type="submit" value="Remove" name="remove"/>
     </div>
 </form>
+<% 
+}
+else{
+	%>
+	<form action="removef" method="get">
+    <input type="hidden" name="registerid" value="<%= m.getId() %>" />
+    <div class="remove">
+       <input type="submit" value="kkkk" name="remove"/>
+    </div>
+</form>
+	
+	
+	<% 
+}
+%>
+
 
 
  </div>

@@ -1,0 +1,403 @@
+@charset "ISO-8859-1";
+
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	font-family: Georgia, serif;
+}
+
+.profileMainDiv {
+	width: 100%;
+	min-height: 100vh;
+	display: flex;
+	background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+
+}
+
+.profileLeftMenuDiv {
+	width: 15%;
+	height: 100vh;
+	position: sticky;
+	top: 0;
+
+
+}
+
+.profilemainContaint {
+	width: 84%;
+	height: 100vh;
+	margin-left: 1px;
+	width: 60%;
+	overflow: scroll;
+
+
+}
+
+.profilecs {
+	width: 90%;
+	min-height: 220px;
+	margin-top: 20px;
+	margin-left: 35px;
+	display: flex;
+	border-radius: 10px;
+	border: 1px solid white;
+	padding: 10px;
+}
+
+.profilePhotoLogocs {
+	width: 23%;
+	margin-top: 20px;
+	border-radius: 50%;
+	height: 150px;
+	background-color: white;
+
+
+}
+
+.usernamecs {
+	width: 70%;
+	height: auto;
+
+}
+
+.usernamecs h2 {
+	color: white;
+	margin-top: 30px;
+	margin-left: 20px;
+}
+
+.usernamecs h5 {
+	color: white;
+	margin-left: 20px;
+}
+
+.usernamecs p {
+	color: white;
+	margin-left: 20px;
+	margin-top: 10px;
+}
+
+.usernamecs a {
+	color: white;
+	text-decoration: none;
+	padding: 10px;
+}
+
+.usernamecs a:hover {
+	color: white;
+	text-decoration: none;
+	padding: 10px;
+}
+
+#editProfile {
+	padding: 2px;
+}
+
+.postdiv {
+	width: 90%;
+	min-height: auto;
+	margin-top: 2px;
+	margin-left: 35px;
+
+}
+
+.mainHeaderPost {
+	width: 100%;
+	display: flex;
+	
+
+}
+
+.mainHeaderPost .logo {
+	width: 65px;
+	height: 55px;
+	background-color: white;
+	border-radius: 50%;
+	margin-left: 3%;
+	margin-top: 1%;
+
+}
+
+.mainHeaderPost .usernamee {
+	width: 100%;
+	min-height: 50px;
+	
+
+
+}
+
+.mainHeaderPost .usernamee h5 {
+	color: white;
+	width: 70%;
+	margin-left: 10px;
+	margin-top: 7px;
+
+
+}
+
+.mainHeaderPost .usernamee .post p {
+	padding-left: 10px;
+	color: white;
+}
+
+.deletePost {
+	margin-right: 10px;
+	margin-top: 7px;
+}
+
+.deletePost a {
+	color: white;
+}
+
+.viewPost {
+	width: 100%;
+	min-height: 300px;
+	border: 1px solid white;
+	margin-top: 5px;
+}
+
+.viewPost .postImage {
+	width: 60%;
+	height: auto;
+	margin: auto;
+
+}
+
+.viewPost .postImage img {
+	width: 100%;
+	height: auto;
+
+}
+
+.likeComment {
+	width: 80%;
+	height: 40px;
+	margin: auto;
+	font-family: "Times New Roman", Times, serif;
+
+}
+
+.likeComment a {
+	width: 20px;
+	font-size: 1.2em;
+	color: white;
+	text-decoration: none;
+	padding: 10px;
+}
+
+.likeComment a:hover {
+	font-size: 1.2em;
+	color: white;
+	text-decoration: none;
+}
+
+#comment {
+	width: 20em;
+	padding-left: 10px;
+}
+
+#editProfilebtn {
+	background-color: white;
+	color: black;
+	padding: 5px;
+	border-radius: 3px;
+}
+
+.profileLeftMenuDivMobile{
+display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+@media only screen and (max-width:768px) {
+.profileMainDiv{
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+.profileLeftMenuDiv{
+	display: none;
+}
+.profileLeftMenuDivMobile{
+	width: 100%;
+	min-height: auto;
+	display: block;
+	
+}
+.profilemainContaint{
+	width: 100%;
+	height: 100vh;
+}
+
+.containt{
+	width: 100%;
+	height: 100%;
+}
+.profilecs {
+	width: 100%;
+	min-height: 220px;
+	margin-top: 20px;
+	border-radius: 10px;
+	border: 1px solid white;
+	padding: 10px;
+	margin-left: 0px;
+	position: relative;
+}
+.profilePhotoLogocs{
+    height: 90px;
+	margin-top: 20px;
+	border-radius: 50%;
+	background-color: white;
+}
+
+.usernamecs{
+	width: 70%;
+	height: auto;
+	
+}
+#editProfilebtn{
+	size: 1em;
+	position: absolute;
+	top: 10px;
+	left: 73%;
+	
+}
+.usernamecs a {
+	color: white;
+	text-decoration: none;
+	padding:10px;
+	
+}
+
+
+.usernamecs a:hover {
+	color: white;
+	text-decoration: none;
+	padding: 10px;
+	
+}
+
+.mainHeaderPost {
+	width: 100%;
+	display: flex;
+	position: relative;
+
+}
+.usernamee{
+	width: 70%;
+	min-height: 50px;
+	padding-right: 10px;
+	
+}
+.usernamee h5{
+	font-size: 1.3em;
+width: 100%;
+
+}
+	.mainHeaderPost .logo {
+	width: 65px;
+	height: 55px;
+	background-color: white;
+	border-radius: 50%;
+	margin-left: 3%;
+	margin-top: 1%;
+
+}
+	
+	.postdiv {
+	width: 100%;
+	min-height: auto;
+	margin-left: 0;
+
+}
+.viewPost{
+	width: 100%;
+	height: 100%;
+}
+.post{
+	width: 100%;
+	font-size:0.9em;
+	text-align: justify;
+	margin-top: 0;
+
+}
+
+.viewPost .postImage {
+	width: 100%;
+	height: auto;
+	margin: auto;
+
+}
+
+.viewPost .postImage img {
+	width: 100%;
+	height: auto;
+
+}
+.likeComment {
+	width: 100%;
+	height: 40px;
+	margin: auto;
+	font-family: "Times New Roman", Times, serif;
+
+}
+
+.likeComment a {
+	width: 20px;
+	font-size: 1.2em;
+	color: white;
+	text-decoration: none;
+	padding: 10px;
+}
+.likeicon{
+	padding-left: 20px;
+	margin-left: 10%;
+	
+}
+.bi-heart-fill{
+	font-size: 1.2em;
+}
+.bi{
+	font-size: 1.2em;
+}
+.comment{
+	width: 7em;
+	height: 0px;
+	padding: 13px;
+	
+}
+.viewPost {
+	width: 100%;
+	min-height: 300px;
+	border: none;
+	border-bottom:1px solid white;
+	margin-top: 0;
+	padding-top: 10px;
+}
+
+.deletePost {
+height: 30px;
+	margin-right: 10px;
+	margin-top: 7px;
+	position: absolute;
+	right:0;
+	
+	
+	
+}
+
+.deletePost a {
+	color: white;
+}
+
+
+}

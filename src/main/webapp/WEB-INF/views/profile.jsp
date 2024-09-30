@@ -9,7 +9,7 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>ProfilePage</title>
-<link rel="stylesheet" href="resources/CSS/profilec.css"/>
+<link rel="stylesheet" href="resources/CSS/profile.css"/>
 <script src="resources/JS/profile.js"></script>
 <!-- Bootstrap Icons CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
@@ -18,6 +18,10 @@
 <div class="profileMainDiv">
     <div class="profileLeftMenuDiv">
         <jsp:include page="menus.jsp" />
+    </div>
+    
+    <div class="profileLeftMenuDivMobile">
+        <jsp:include page="mobileMenus.jsp" />
     </div>
     <%
     UserInfoModel model = (UserInfoModel)request.getAttribute("userInfoModel");
@@ -30,7 +34,8 @@
     <div class="containt">
     <div class="profilecs">
     <div class="profilePhotoLogocs">
-    
+    <img src="" style="width:100%;height:100%; border-radius: 50%" >
+  
     </div>
    <div class="usernamecs">
   <h2><%= model.getUsername() %></h2>
@@ -50,9 +55,10 @@
       
   %>
   
+  
+  <a class= "ff"href="followr?registerid=<%= registerid %>">Followers: <%= followerCount %></a>
+  <a class="ff" href="following?registerid=<%= registerid %>">Followings: <%= followingCount %></a>
   <a href="#">Posts: <%= postcount %></a>
-  <a href="followers?registerid=<%= registerid %>">followers: <%= followerCount %></a>
-  <a href="following?registerid=<%= registerid %>">followings: <%= followingCount %></a>
   <%
    int registerids=(Integer)session.getAttribute("registerid");
    if(registerids==registerid){
@@ -71,6 +77,7 @@
    <div class="viewPost">
    <div class="mainHeaderPost">
    <div class="logo">
+   <img  style="width:100%;height:100%; border-radius: 50%" >
    </div>
    <div class="usernamee">
    <h5><%= model.getName() %></h5>
@@ -85,12 +92,8 @@
    String filename=p.getFilename();
    String path=uploadDir+"\\"+filename;
    
-   
    %>
-   
    </div>
-   
-    
    
    </div>
    <%
@@ -103,7 +106,7 @@
    }
  %>
    
-   </div>
+   </div>   <!-- mainHeaderPost -->
   <div class="postImage">
    <img alt="<%= filename %>" src="<%= request.getContextPath() %>/resources/uploads/<%= filename %>">
 </div>
@@ -121,23 +124,23 @@
     }
     if(flag==1){
     	%>
-      <a href="#" class="likeicon" id="likeicon<%=postid%>">
-    <i class="bi bi-heart-fill text-danger" onclick="likeUnlikePost(<%=postid%>)"></i><%= p.getCount() %>
+      <a href="#" class="likeicon" id="likeiconprofile<%=postid%>">
+    <i class="bi bi-heart-fill text-danger" onclick="likeUnlikePostprofile(<%=postid%>)"></i><%= p.getCount() %>
 </a>
 
  <% 
     }
     else{
     	%>
-              <a href="#" class="likeicon" id="likeicon<%=postid%>">
-    <i class="bi bi-heart-fill text-white" onclick="likeUnlikePost(<%=postid%>)"></i><%= p.getCount() %>
+              <a href="#" class="likeicon" id="likeiconprofile<%=postid%>">
+    <i class="bi bi-heart-fill text-white" onclick="likeUnlikePostprofile(<%=postid%>)"></i><%= p.getCount() %>
 </a>
   <% 
     }
     %> 
    
 <a href="#" class="commenticon" id="commenticon<%=postid%>"><i class="bi bi-chat-right"></i><%= p.getCommentCount() %>
-<input id="comment<%=postid%>" type="text" name="comment" value="" placeholder="Comment Here" style="width:15em;height:20px;text-size:7px"/></a>
+<input id="comment<%=postid%>" class="comment" type="text" name="comment" value="" placeholder="Comment Here" style="width:7em;height:0px;padding:13px"/></a>
 <input type="button" name="comments" value="Comment" onclick="iscommentpost(<%=postid%>)" />
  </form>
 
@@ -154,7 +157,7 @@
       } else {
   %>
    <a href="#">Posts: <%= postcount %></a>
-   <a href="followers?registerid=<%= registerid %>">followers: <%= followerCount %></a>
+   <a href="followr?registerid=<%= registerid %>">followers: <%= followerCount %></a>
   <a href="following?registerid=<%= registerid %>">followings: <%= followingCount %></a>
     <%
    int registerids=(Integer)session.getAttribute("registerid");

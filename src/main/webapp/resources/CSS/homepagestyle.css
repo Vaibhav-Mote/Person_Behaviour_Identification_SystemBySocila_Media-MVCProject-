@@ -14,7 +14,7 @@
 		   width: 300px;
 		    position: absolute;
 		    left: 800px
-	   };
+	   }
 	   
 	   .maindiv{
 		   height: 100%;
@@ -66,3 +66,101 @@ border: 0px solid #6C8003;
 	border-radius: 10px;
 	text-decoration: none;
 	}
+	
+	
+	
+	
+	
+	
+@media only screen and (max-width: 768px) {
+
+  
+    .maindiv {
+        width: 100%;
+        height: auto;
+        text-align: center; 
+    }
+
+   
+    #homeimg {
+        height: auto; 
+        width: 100%;  
+        position: relative; 
+    }
+
+   .text{
+	  background: linear-gradient(to top, #0f0c29, #302b63, rgb(149, 149, 193));
+	font-family: Georgia, serif;
+	   height: 150px;
+	   margin-top: 5px;
+   }
+   
+   @keyframes blink {
+        0%, 100% {opacity: 1;}
+        50% {opacity: 0;}
+}
+#blinking-text {
+  animation: blink 3s linear infinite;
+  color: white;
+}
+   
+   
+   
+    #socialMediaLog {
+        height: 150px; 
+        width: 150px;
+        position: relative;
+        left: auto; 
+        margin: 20px auto; 
+    }
+
+   
+    .maindiv h1 {
+        font-size: 1.5em; 
+        top: 10px; 
+        left: 0;  
+        margin: 0 auto; 
+    }
+
+   
+    .menus {
+        position: relative;
+        bottom: 20px;
+        left: 0;
+        text-align: center;
+    }
+
+    .menus ul {
+        list-style: none; 
+        padding: 0; 
+    }
+
+    .menus li {
+        display: inline-block; 
+        margin: 0 10px;
+    }
+
+    .menus a {
+        color: white;
+        padding: 10px 15px; 
+        display: inline-block; 
+        text-decoration: none; /* Remove underline */
+        border-radius: 10px; /* Add border-radius */
+        transition: background-color 0.3s; /* Smooth transition for hover effect */
+        background: linear-gradient(to top, #0f0c29, #302b63, rgb(149, 149, 193));
+    }
+
+    .menus a:hover {
+    color: white;
+        padding: 10px 15px;
+        height: 100%; 
+        display: inline-block; 
+        text-decoration: none; /* Remove underline */
+        border-radius: 10px; /* Add border-radius */
+        transition: background-color 0.3s; /* Smooth transition for hover effect */
+        background:orange;
+    
+
+}
+
+}

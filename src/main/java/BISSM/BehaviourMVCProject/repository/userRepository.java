@@ -17,11 +17,13 @@ public boolean isUnfollowUser(int registerid,int userid) ;
 public boolean UpdateUserData(UserInfoModel model,int rid) ;
 public List<UserInfoModel> isgetAllUsers();
 public List<UserInfoModel> isgetAllUsersInfoByName(String name);
+public boolean isFollowUser(int userid,int registerid) ;
+public boolean isAddUser(UserInfoModel model) ;
 /*
 
 public List isSearchUser(String username) ;
 public int gerUserRegistrationid(String username) ;
-public boolean isFollowUser(int userid,int registerid) ;
+
 public boolean forgetPassward(String oldPass,String newPass,int rid);
 public boolean isDeleteAccount(int registerid) ;
 public boolean isCheckDeleteReuest(int registerid) ;

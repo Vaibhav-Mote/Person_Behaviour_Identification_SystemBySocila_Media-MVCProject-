@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.mysql.cj.xdevapi.Statement;
-
 import BISSM.BehaviourMVCProject.model.PostLikeCount;
+import BISSM.BehaviourMVCProject.model.UserInfoModel;
+
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -35,7 +36,7 @@ public class PostRepositoryImpl implements PostRepository {
                              "INNER JOIN postregistrationjoin prj ON pm.postid = prj.postid " +
                              "INNER JOIN userregistrationmaster rm ON rm.registerid = prj.registerid " +
                              "WHERE rm.registerid = ? " +
-                             "ORDER BY pm.date DESC";
+                             "ORDER BY pm.postid DESC";
 
         List<Integer> postIds = template.query(postIdQuery, new Object[]{registerIDSearchUser}, 
                                                    new RowMapper<Integer>() {
@@ -129,7 +130,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     
  // like the post
- 	public boolean islikePost(int userid, int postid) {
+ 	public boolean islikePost(final int userid, int postid) {
  		try {
  			Integer likeid=null;
  			// Check if the user has already liked the post
@@ -233,7 +234,7 @@ public class PostRepositoryImpl implements PostRepository {
 	}
 	
 	// comment the post
-		public boolean isCommenPost(int userid, int postid, String comment) {
+		public boolean isCommenPost(final int userid, int postid, final String comment) {
 
 			try {
 				
@@ -271,7 +272,7 @@ public class PostRepositoryImpl implements PostRepository {
 
 		
 		// Add the new post
-		 public boolean isAddPost(String post, int registerid, String fileName) {
+		 public boolean isAddPost(final String post, int registerid, final String fileName) {
 			try {
 				KeyHolder keyHolder = new GeneratedKeyHolder();
 				int v=template.update(new PreparedStatementCreator() {
@@ -305,7 +306,127 @@ public class PostRepositoryImpl implements PostRepository {
 
 		}
 		
-	
+//get forYou user
+		 public List<List<Object>> getForYou() {
+		        List<List<Object>> list = new ArrayList<List<Object>>();
+
+		        try {
+		            // Fetch posts and user information
+		            String postQuery = "select r.username, r.name, p.postid, p.postname, p.date, p.time, p.filename " +
+		                    "from postmaster p " +
+		                    "inner join postregistrationjoin prj on p.postid = prj.postid " +
+		                    "inner join userregistrationmaster r on r.registerid = prj.registerid order by p.postid desc";
+
+		            List<List<Object>> posts = template.query(postQuery, new RowMapper<List<Object>>() {
+		                @Override
+		                public List<Object> mapRow(ResultSet rs, int rowNum) throws SQLException {
+		                    UserInfoModel umodel = new UserInfoModel();
+		                    PostLikeCount pmodel = new PostLikeCount();
+
+		                    umodel.setUsername(rs.getString("username"));
+		                    umodel.setName(rs.getString("name"));
+		                    pmodel.setPostid(rs.getInt("postid"));
+		                    pmodel.setPost(rs.getString("postname"));
+		                    pmodel.setFilename(rs.getString("filename"));
+
+		                    // Fetch like count of post
+		                    String likeQuery = "select count(lm.likeid) from likemaster lm " +
+		                            "inner join likepostjoin lpj on lpj.likeid = lm.likeid " +
+		                            "inner join postmaster pm on pm.postid = lpj.postid " +
+		                            "where pm.postid = ?";
+		                    Integer likeCount = template.queryForObject(likeQuery, new Object[]{pmodel.getPostid()}, Integer.class);
+		                    pmodel.setCount(likeCount != null ? likeCount : 0);
+
+		                    // Fetch comment count of post
+		                    String commentQuery = "select count(cm.commentid) from commentmaster cm " +
+		                            "inner join postcommentjoin pcj on pcj.commentid = cm.commentid " +
+		                            "inner join postmaster pm on pm.postid = pcj.postid " +
+		                            "where pm.postid = ?";
+		                    Integer commentCount = template.queryForObject(commentQuery, new Object[]{pmodel.getPostid()}, Integer.class);
+		                    pmodel.setCommentCount(commentCount != null ? commentCount : 0);
+
+		                    List<Object> upmodellist = new ArrayList<Object>();
+		                    upmodellist.add(pmodel);
+		                    upmodellist.add(umodel);
+		                    return upmodellist;
+		                }
+		            });
+
+		            list.addAll(posts);
+
+		        } catch (Exception ex) {
+		            ex.printStackTrace();
+		            return null;
+		        }
+
+		        return list;
+		    }
+		 
+		 
+		//get all friends follower posts
+			@Override
+
+		    public List<List<Object>> getFriendsFollowerPosts(int registerid) {
+		        List<List<Object>> list = new ArrayList<List<Object>>();
+
+		        try {
+		            // Query to fetch posts and user information
+		            String postQuery = "SELECT r.username, r.name, p.postid, p.postname, p.date, p.time, p.filename " +
+		                    "FROM postmaster p " +
+		                    "INNER JOIN postregistrationjoin prj ON p.postid = prj.postid " +
+		                    "INNER JOIN userregistrationmaster r ON r.registerid = prj.registerid " +
+		                    "WHERE prj.registerid IN (SELECT r.registerid FROM userregistrationmaster r " +
+		                    "INNER JOIN followingmaster fwer ON r.registerid = fwer.registerid " +
+		                    "INNER JOIN followerfollowingjoin ff ON fwer.followingid = ff.followingid " +
+		                    "WHERE ff.registerid = ?)";
+
+		            List<List<Object>> posts = template.query(postQuery, new Object[]{registerid}, new RowMapper<List<Object>>() {
+		                @Override
+		                public List<Object> mapRow(ResultSet rs, int rowNum) throws SQLException {
+		                    UserInfoModel umodel = new UserInfoModel();
+		                    PostLikeCount pmodel = new PostLikeCount();
+
+		                    umodel.setUsername(rs.getString("username"));
+		                    umodel.setName(rs.getString("name"));
+		                    pmodel.setPostid(rs.getInt("postid"));
+		                    pmodel.setPost(rs.getString("postname"));
+		                    pmodel.setFilename(rs.getString("filename"));
+
+		                    // Fetch like count of post
+		                    String likeQuery = "SELECT COUNT(lm.likeid) FROM likemaster lm " +
+		                            "INNER JOIN likepostjoin lpj ON lpj.likeid = lm.likeid " +
+		                            "INNER JOIN postmaster pm ON pm.postid = lpj.postid " +
+		                            "WHERE pm.postid = ?";
+		                    Integer likeCount = template.queryForObject(likeQuery, new Object[]{pmodel.getPostid()}, Integer.class);
+		                    pmodel.setCount(likeCount != null ? likeCount : 0);
+
+		                    // Fetch comment count of post
+		                    String commentQuery = "SELECT COUNT(cm.commentid) FROM commentmaster cm " +
+		                            "INNER JOIN postcommentjoin pcj ON pcj.commentid = cm.commentid " +
+		                            "INNER JOIN postmaster pm ON pm.postid = pcj.postid " +
+		                            "WHERE pm.postid = ?";
+		                    Integer commentCount = template.queryForObject(commentQuery, new Object[]{pmodel.getPostid()}, Integer.class);
+		                    pmodel.setCommentCount(commentCount != null ? commentCount : 0);
+
+		                    List<Object> upmodellist = new ArrayList<Object>();
+		                    upmodellist.add(pmodel);
+		                    upmodellist.add(umodel);
+		                    return upmodellist;
+		                }
+		            });
+
+		            list.addAll(posts);
+
+		        } catch (Exception ex) {
+		            ex.printStackTrace(); // Consider using a logging framework
+		            return null;
+		        }
+
+		        return list;
+		    }
+
+
+		 
 	/*
 	 
 
@@ -392,130 +513,11 @@ public class PostRepositoryImpl implements PostRepository {
 
 	
 
-
-//get all friends follower posts
-	@Override
-	public List<List<Object>> getFriendsFollowerPosts(int registerid) {
-
-	    List<List<Object>> list = new ArrayList<>();
-	    
-	    try {
-	        stmt = conn.prepareStatement(
-	                " SELECT r.username, r.name, p.postid, p.postname, p.date, p.time,p.filename FROM postmaster p INNER JOIN postregistrationjoin prj ON p.postid = prj.postid INNER JOIN userregistrationmaster r ON r.registerid = prj.registerid WHERE prj.registerid in (select r.registerid from userregistrationmaster r inner join followingmaster fwer on r.registerid = fwer.registerid inner join followerfollowingjoin ff on fwer.followingid = ff.followingid where ff.registerid =?)");
-	        stmt.setInt(1, registerid);
-	        rs = stmt.executeQuery();
-
-	        while (rs.next()) {
-	            UserInfoModel umodel = new UserInfoModel();
-	            PostLikeCount pmodel = new PostLikeCount();
-	            umodel.setUsername(rs.getString(1));
-	            umodel.setName(rs.getString(2));
-	            pmodel.setPostid(rs.getInt(3));
-	            pmodel.setPost(rs.getString(4));
-	            pmodel.setFilename(rs.getString(7));
-
-	            // Fetch like count of post
-	            PreparedStatement likeStmt = conn.prepareStatement(
-	                    "select count(lm.likeid) from likemaster lm " +
-	                    "inner join likepostjoin lpj on lpj.likeid = lm.likeid " +
-	                    "inner join postmaster pm on pm.postid = lpj.postid " +
-	                    "where pm.postid = ?");
-	            likeStmt.setInt(1, rs.getInt(3));
-	            ResultSet likeRs = likeStmt.executeQuery();
-	            if (likeRs.next()) {
-	                pmodel.setCount(likeRs.getInt(1));
-	            }
-	            likeRs.close();
-	            likeStmt.close();
-
-	            // Fetch comment count of post
-	            PreparedStatement commentStmt = conn.prepareStatement(
-	                    "select count(cm.commentid) from commentmaster cm " +
-	                    "inner join postcommentjoin pcj on pcj.commentid = cm.commentid " +
-	                    "inner join postmaster pm on pm.postid = pcj.postid " +
-	                    "where pm.postid = ?");
-	            commentStmt.setInt(1, rs.getInt(3));
-	            ResultSet commentRs = commentStmt.executeQuery();
-	            if (commentRs.next()) {
-	                pmodel.setCommentCount(commentRs.getInt(1));
-	            }
-	            commentRs.close();
-	            commentStmt.close();
-
-	            List<Object> upmodellist = new ArrayList<>();
-	            upmodellist.add(pmodel);
-	            upmodellist.add(umodel);
-	            list.add(upmodellist);
-	        }
-	        rs.close();
-	        stmt.close();
-	    } catch (Exception ex) {
-	        ex.printStackTrace(); // Consider logging the exception properly
-	        return null;
-	    }
-
-	    return list;
-	}
-
-	public List<List<Object>> getForYou() {
-
-	    List<List<Object>> list = new ArrayList<>();
-	    
-	    try {
-	        stmt = conn.prepareStatement(
-	                "select r.username, r.name, p.postid, p.postname, p.date, p.time,p.filename from postmaster p inner join postregistrationjoin prj on p.postid = prj.postid inner join userregistrationmaster r on r.registerid = prj.registerid");
-	        rs = stmt.executeQuery();
-
-	        while (rs.next()) {
-	            UserInfoModel umodel = new UserInfoModel();
-	            PostLikeCount pmodel = new PostLikeCount();
-	            umodel.setUsername(rs.getString(1));
-	            umodel.setName(rs.getString(2));
-	            pmodel.setPostid(rs.getInt(3));
-	            pmodel.setPost(rs.getString(4));
-	            pmodel.setFilename(rs.getString(7));
-
-	            // Fetch like count of post
-	            PreparedStatement likeStmt = conn.prepareStatement(
-	                    "select count(lm.likeid) from likemaster lm " +
-	                    "inner join likepostjoin lpj on lpj.likeid = lm.likeid " +
-	                    "inner join postmaster pm on pm.postid = lpj.postid " +
-	                    "where pm.postid = ?");
-	            likeStmt.setInt(1, rs.getInt(3));
-	            ResultSet likeRs = likeStmt.executeQuery();
-	            if (likeRs.next()) {
-	                pmodel.setCount(likeRs.getInt(1));
-	            }
-	            likeRs.close();
-	            likeStmt.close();
-
-	            // Fetch comment count of post
-	            PreparedStatement commentStmt = conn.prepareStatement(
-	                    "select count(cm.commentid) from commentmaster cm " +
-	                    "inner join postcommentjoin pcj on pcj.commentid = cm.commentid " +
-	                    "inner join postmaster pm on pm.postid = pcj.postid " +
-	                    "where pm.postid = ?");
-	            commentStmt.setInt(1, rs.getInt(3));
-	            ResultSet commentRs = commentStmt.executeQuery();
-	            if (commentRs.next()) {
-	                pmodel.setCommentCount(commentRs.getInt(1));
-	            }
-	            commentRs.close();
-	            commentStmt.close();
-
-	            List<Object> upmodellist = new ArrayList<>();
-	            upmodellist.add(pmodel);
-	            upmodellist.add(umodel);
-	            list.add(upmodellist);
-	        }
-	        rs.close();
-	        stmt.close();
-	    } catch (Exception ex) {
-	        return null;
-	    }
-
-	    return list;
-	}
-
 */
+			
+			
+			
+			
+            
+           
 }

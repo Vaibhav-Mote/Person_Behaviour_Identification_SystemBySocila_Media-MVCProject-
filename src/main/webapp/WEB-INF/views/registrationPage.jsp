@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,7 +8,7 @@
 <title>Insert title here</title>
 
 <link rel="stylesheet" href="resources/CSS/registrationPage.css">
-<script src="JS/registration.js"></script>
+<script src="resources/JS/registration.js"></script>
 
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
@@ -24,7 +25,7 @@
 	src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
 	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
 	crossorigin="anonymous"></script>
-	
+	 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 	<div class="maindiv">
@@ -54,19 +55,14 @@
 				</div>
 
 				<button type="submit" id="submitbtn" class="btn btn-primary ">Submit</button>
-				<a href="login.jsp" id="submitbtn"
+				<a href="loginpage" id="submitbtn"
 					class="btn btn-primary ">Go Login</a>
 					
 					
 			</form>
-			<%
-			String message=(String)request.getAttribute("message");
-			if(message!=null){
-				%>
-				<p style="padding-left:70px"><%=message %></p>
-				<%
-			}
-			%>
+			<div style="color:red ;margin-left:30%;;margin-top:10px  ">${message}</div>
+			
+			
 
 		</div>
 

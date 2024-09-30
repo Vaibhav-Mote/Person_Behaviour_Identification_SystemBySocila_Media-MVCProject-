@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
+import BISSM.BehaviourMVCProject.model.PostLikeCount;
 import BISSM.BehaviourMVCProject.model.UserInfoModel;
 import BISSM.BehaviourMVCProject.service.PostServiceImpl;
 import BISSM.BehaviourMVCProject.service.userServiceImpl;
@@ -28,15 +30,9 @@ public class loginServletController {
 		return "login";
 	}
 
-	public String getMenus() {
-		return "menus";
-	}
+	
 
-	@RequestMapping("newPost")
-	public String getNewPostPage() {
-		this.getMenus();
-		return "newPost";
-	}
+	
 
 	@RequestMapping(value = "/loginn")
 	public String getlogin(HttpServletRequest request, Map<String, Object> map) throws ServletException {
@@ -44,20 +40,25 @@ public class loginServletController {
 		String password = request.getParameter("password");
 		int registerid = userSer.isgetregisterid(username, password);
 		if (registerid != -1) {
+			
 			HttpSession session = request.getSession(true);
 			UserInfoModel model = userSer.isgetAllDatauser(registerid);
-			session.setAttribute("userInfoModel", model);
+			session.setAttribute("userInfoModel2", model);
 			session.setAttribute("registerid", registerid);
-			
-//			List<Integer>likedPostList=postService.getAlredyLikedPost(registerid);
-//			session.setAttribute("likedpost", likedPostList);
-			
-			return "index";
-
-		} else {
+	        List<List<Object>> posts = postService.getForYou(); 
+	        List<Integer>likedPostList=postService.getAlredyLikedPost(registerid);
+	        List<List<Object>>FriendsFollowerPostsList = postService.getFriendsFollowerPosts(registerid);
+	       session.setAttribute("posts", posts);
+	       session.setAttribute("likedPostList",likedPostList);
+	       session.setAttribute("FriendsFollowerPostsList", FriendsFollowerPostsList);
+	       return "index";
+	} 
+		else {
 			map.put("msg", "login failed");
 			return "login";
+			
 		}
+		
 	}
 
 }

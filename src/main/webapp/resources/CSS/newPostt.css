@@ -1,13 +1,14 @@
 @charset "ISO-8859-1";
-@charset "ISO-8859-1";
+
 *{
 	margin: 0;
 	padding: 0;
     box-sizing: border-box;	
+    font-family: Georgia, serif;
 }
 .mainContent{
 	width: 100%;
-	height: 100vh;
+	height: 100%;
 	display: flex;
 	background-color: white;
 }
@@ -68,8 +69,118 @@ overflow:scroll;
 	margin-top: 10px;
 
 }
+.profileLeftMenuDivMobile{
+	display: none;
+}
+.msg{
+	padding-left:150px;
+	padding-top:30px;
+	color:blue
+}
 
 
+/*-------------------------------------------------------*/
+@media only screen and (max-width:768px){
+
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: Georgia, serif;
+	
+}
+
+.mainContent{
+	width: 100%;
+	height:100%;
+	display: block;
+	padding-left: 10px;
+	position: relative;
+	
+	
+	
+}
+.leftprofile{
+	display: none;
+}
+	.profileLeftMenuDivMobile{
+		display: block;
+		width: 100%;
+		height: auto;
+	
+}
+.newpost{
+	width: 100%;
+	height: 100vh;
+	margin-left: 0px;
+padding-top: 0px;
+}
+
+.post{
+	width: 400px;
+	min-height:650px;
+	border-radius: 10px;
+	padding-top: 40%;
+	margin: 20px;
+
+	
+	}
+
+#h2{
+	 color:#302b63;
+	position: absolute;
+	top:6%;
+	
+
+}
+
+
+.postImgdiv{
+	width: 60%;
+	min-height:auto;
+	position: absolute;
+    margin-top: 13%;
+   margin-left:70px;
+   
+
+  
+  
+}
+#postimg{
+	width: 100%;
+	height: 100%;
+	
+}
+
+#newpost{	
+width: 90%;
+margin:20px;
+margin-top: 56%;
+padding-bottom: 90px;
+padding-left:5px ;
+padding-top: 9px;
+overflow:scroll;
+}
+#file{
+	margin-left: 10px;
+	margin-top: 10px;
+}
+#btn{
+	padding: 10px;
+	width: 70px;
+	position: absolute;
+	right: 10%;
+	top:72%;
+
+}
+.msg{
+	padding-left:6em;
+	padding-top:5px;
+	color:blue;
+	font-size:1em;
+}
+
+}
 
 
 

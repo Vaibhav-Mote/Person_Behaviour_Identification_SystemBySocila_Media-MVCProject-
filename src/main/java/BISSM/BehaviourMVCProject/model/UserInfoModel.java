@@ -6,7 +6,29 @@ public class UserInfoModel {
 	private String username;
 	private String pass;
 	private int id;
+	private int followerCount;
+	private int followingCount;
 	
+	public int getFollowerCount() {
+		return followerCount;
+	}
+
+
+	public void setFollowerCount(int followerCount) {
+		this.followerCount = followerCount;
+	}
+
+
+	public int getFollowingCount() {
+		return followingCount;
+	}
+
+
+	public void setFollowingCount(int followingCount) {
+		this.followingCount = followingCount;
+	}
+
+
 	public int getId() {
 		return id;
 	}

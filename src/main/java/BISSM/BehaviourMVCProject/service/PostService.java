@@ -13,6 +13,8 @@ public interface PostService {
 	public boolean isCommenPost(int userid ,int postid,String comment) ;
 	public int isgetCommentCount(int postid);
 	boolean isAddPost(String post, int registerid, String fileName);
+	public List<List<Object>> getForYou() ;
+	public List<List<Object>> getFriendsFollowerPosts(int registerid);
 	/*
 
 public List viewTrendingpost() ;
@@ -24,7 +26,7 @@ public boolean isCommenPost(int userid ,int postid,String comment) ;
 public List countLikeOfPersonlPost(int userid);
 
 
-public List<List<Object>> getFriendsFollowerPosts(int registerid);
-public List<List<Object>> getForYou() ;
+
+
 */
 }

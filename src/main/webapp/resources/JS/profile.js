@@ -1,11 +1,11 @@
-function likeUnlikePost(postId){
+function likeUnlikePostprofile(postId){
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function(){
         if(this.readyState == 4 && this.status == 200){
-            document.getElementById("likeicon" + postId).outerHTML = this.responseText;
+            document.getElementById("likeiconprofile" + postId).outerHTML = this.responseText;
         }
     };
-    xhttp.open("GET", "likepost?postid=" + postId + "&t=" + new Date().getTime(), true);
+    xhttp.open("GET", "likepostprofile?postid=" + postId + "&t=" + new Date().getTime(), true);
     xhttp.send();
 }
 

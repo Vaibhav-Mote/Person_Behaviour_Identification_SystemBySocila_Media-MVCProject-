@@ -55,6 +55,16 @@ public class PostServiceImpl implements PostService {
 		// TODO Auto-generated method stub return
 			 return postRepo.isAddPost(post, registerid, fileName); }
 	
+	@Override 
+	public List<List<Object>> getForYou() { 
+		return postRepo.getForYou(); 
+		}
+	
+	@Override 
+	public List<List<Object>> getFriendsFollowerPosts(int registerid) {
+	 return postRepo.getFriendsFollowerPosts(registerid); 
+	 }
+	
 	/*
 	 * public List viewTrendingpost() { return postRepo.viewTrendingpost(); }
 	 * 
@@ -70,11 +80,9 @@ public class PostServiceImpl implements PostService {
 	 * 
 	 * 
 	 * 
-	 * @Override public List<List<Object>> getFriendsFollowerPosts(int registerid) {
-	 * return postRepo.getFriendsFollowerPosts(registerid); }
 	 * 
-	 * @Override public List<List<Object>> getForYou() { return
-	 * postRepo.getForYou(); }
+	 * 
+	 * 
 	 * 
 	 * 
 	 */

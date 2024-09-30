@@ -8,6 +8,7 @@
 <title>Insert title here</title>
 <link rel="stylesheet" href="resources/CSS/followers.css">
 <script src="resources/JS/followers.js" ></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 
@@ -15,6 +16,7 @@
 <div class="leftprofile">
 <%@ include file="menus.jsp" %>
 </div>
+
 <div class="followersContaint">
 
 <%
@@ -37,12 +39,20 @@ for(UserInfoModel m:list){
 <%=m.getName() %>
 
 </div>
-<form action="unfollow" method="get">
+<%
+int sessionregisterid=(Integer)session.getAttribute("registerid");
+int parameterregisterid=Integer.parseInt(request.getParameter("registerid"));
+
+	%>
+	<form action="unfollow" method="get">
                     <input type="hidden" name="registerid" value="<%= m.getId() %>" />
                     <div class="remove">
                         <input type="submit" value="Unfollow" name="remove" />
                     </div>
                 </form>
+	<% 
+%>
+
 
  </div>
  

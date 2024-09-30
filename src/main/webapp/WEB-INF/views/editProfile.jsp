@@ -8,6 +8,7 @@
 <title>Insert title here</title>
 <link rel="stylesheet" href="resources/CSS/editProfilee.css">
 <script src="resources/JS/editProfile.js" ></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 
@@ -19,12 +20,13 @@
 </div>
 <div class="maincontaint">
 <div class="editprofile">
+
 <h2 id="editheader">Edit Profile</h2>
 <%
 
 UserInfoModel model1 = (UserInfoModel)request.getAttribute("userInfoModel");
 %>
-<form method="get" action="editProfileController"  >
+<form method="get" action="editProfileController"  onsubmit=" return isUniqueUsername()" >
     <div class="logo">
     </div>
     <label>Username</label><br>

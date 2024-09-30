@@ -1,15 +1,21 @@
 package BISSM.BehaviourMVCProject.repository;
 
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import BISSM.BehaviourMVCProject.model.UserInfoModel;
 
@@ -89,31 +95,36 @@ public UserInfoModel isgetAllDatauser(final int registerid) {
 	@Override
 	public boolean isRemoveFollower(int registerid, int userid) {
 	    try {
-	        Integer followerid = template.queryForObject(
-	            "SELECT fwer.followerid FROM userregistrationmaster r " +
-	            "INNER JOIN followermaster fwer ON r.registerid=fwer.registerid " +
-	            "INNER JOIN followerfollowingjoin ff ON fwer.followerid=ff.followerid " +
-	            "WHERE ff.registerid=? AND r.registerid=?", 
-	            new Object[]{userid, registerid},
-	            new RowMapper<Integer>() {
-	                @Override
-	                public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-	                    return rs.getInt(1);
-	                }
-	            }
-	        );
+	    	// remove follower 
+	   int followerid = template.queryForObject(
+	    		    "SELECT fwer.followerid FROM userregistrationmaster r " +
+	    		    "INNER JOIN followermaster fwer ON r.registerid=fwer.registerid " +
+	    		    "INNER JOIN followerfollowingjoin ff ON fwer.followerid=ff.followerid " +
+	    		    "WHERE ff.registerid=? AND r.registerid=?", 
+	    		    Integer.class, userid, registerid);
 
-	        if (followerid != null) {
-	            int v = template.update("DELETE FROM followerfollowingjoin WHERE registerid = ? AND followerid = ?", userid, followerid);
-	            if (v > 0) {
-	                v = template.update("DELETE FROM followermaster WHERE registerid = ? AND followerid = ?", registerid, followerid);
-	                return v > 0;
-	            } else {
-	                return false;
-	            }
-	        } else {
-	            return false;
-	        }
+	     int deletedCount = template.update("DELETE FROM followerfollowingjoin WHERE registerid = ? AND followerid = ?", userid, followerid);      
+	     deletedCount = template.update("DELETE FROM followermaster WHERE registerid = ? AND followerid = ?", registerid, followerid);
+	    		           
+	    	
+	     // remove following another user
+	    	int followingid = template.queryForObject(
+		    "SELECT fwer.followingid FROM userregistrationmaster r " +
+		    "INNER JOIN followingmaster fwer ON r.registerid=fwer.registerid " +
+		    "INNER JOIN followerfollowingjoin ff ON fwer.followingid=ff.followingid " +
+		    "WHERE ff.registerid=? AND r.registerid=?", 
+		    Integer.class, registerid,userid);
+			/*
+			 * System.out.println(registerid); System.out.println(userid);
+			 * 
+			 * System.out.println("following join:"+followingid);
+			 */
+
+	    	deletedCount= template.update("DELETE FROM followerfollowingjoin WHERE followingid = ?",  followingid);
+	    	deletedCount = template.update("DELETE FROM followingmaster WHERE followingid = ?",followingid);
+            
+	        return (deletedCount>0)?true:false;
+	    	
 	    } catch (EmptyResultDataAccessException e) {
 	        return false;
 	    }
@@ -123,17 +134,10 @@ public UserInfoModel isgetAllDatauser(final int registerid) {
 	//get following count 
 		public int  getFollowingCount(int registerid) {
 			try {
-				Integer followingCount=template.queryForObject("select count(ff.followingid) from userregistrationmaster r inner join followingmaster fwing on r.registerid=fwing.registerid inner join followerfollowingjoin ff on fwing.followingid=ff.followingid group by ff.registerid having ff.registerid=?",new Object[] {registerid},new RowMapper<Integer>() {
-
-					@Override
-					public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-						return rs.getInt(1);
-					}
-				});
+				Integer followingCount=template.queryForObject("select count(ff.followingid) from userregistrationmaster r inner join followingmaster fwing on r.registerid=fwing.registerid inner join followerfollowingjoin ff on fwing.followingid=ff.followingid group by ff.registerid having ff.registerid=?",new Object[] {registerid},Integer.class);
 			   return(followingCount!=null)?followingCount:0;
 	
 			}catch(Exception ex) {
-				System.out.println("Error is:"+ex);
 				return 0;
 			}
 			
@@ -145,16 +149,8 @@ public UserInfoModel isgetAllDatauser(final int registerid) {
 		//is get followerCount
 		public int  getFollowerCount(int registerid) {
 			try {
-				Integer followerCount=template.queryForObject("select count(ff.followerid) from userregistrationmaster r inner join followermaster fwer on r.registerid=fwer.registerid inner join followerfollowingjoin ff on fwer.followerid=ff.followerid group by ff.registerid having ff.registerid=?",new Object[] {registerid},new RowMapper<Integer>() {
-
-					@Override
-					public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-						return rs.getInt(1);
-					}
-					
-				});
+				Integer followerCount=template.queryForObject("select count(ff.followerid) from userregistrationmaster r inner join followermaster fwer on r.registerid=fwer.registerid inner join followerfollowingjoin ff on fwer.followerid=ff.followerid group by ff.registerid having ff.registerid=?",new Object[] {registerid},Integer.class);
 			    return (followerCount!=null)?followerCount:0;
-			
 			}catch(Exception ex) {
 				return 0;
 			}
@@ -164,7 +160,7 @@ public UserInfoModel isgetAllDatauser(final int registerid) {
 		
 
 		//get follower list
-			
+
 			public List<UserInfoModel> isgetFollowerList(final int registerid ) {
 				String query="select r.registerid ,r.name,r.username from userregistrationmaster r inner join followermaster fwer on r.registerid=fwer.registerid inner join followerfollowingjoin ff on fwer.followerid=ff.followerid where ff.registerid=?";
 			List<UserInfoModel> model = template.query(query, new Object[]{registerid}, 
@@ -172,11 +168,12 @@ public UserInfoModel isgetAllDatauser(final int registerid) {
 						@Override
 						public UserInfoModel mapRow(ResultSet rs, int rowNum)
 								throws SQLException {
-							UserInfoModel model1=new UserInfoModel();
-							model1.setId(rs.getInt(1));
-							model1.setName(rs.getString(2));
-							model1.setUsername(rs.getString(3));
-							return model1;
+								UserInfoModel model1=new UserInfoModel();
+								model1.setId(rs.getInt(1));
+								model1.setName(rs.getString(2));
+								model1.setUsername(rs.getString(3));
+								return model1;	
+							
 						}
 					});
 			return model;
@@ -189,50 +186,62 @@ public UserInfoModel isgetAllDatauser(final int registerid) {
 			List<UserInfoModel> modelList = template.query(query, new Object[]{registerid}, 
 		            new RowMapper<UserInfoModel>() {
 						@Override
-						public UserInfoModel mapRow(ResultSet rs, int rowNum)
-								throws SQLException {
+						public UserInfoModel mapRow(ResultSet rs, int rowNum)throws SQLException {
+							
 							UserInfoModel model1=new UserInfoModel();
 							model1.setId(rs.getInt(1));
 							model1.setName(rs.getString(2));
 							model1.setUsername(rs.getString(3));
 							return model1;
+							
 						}
 					});
 			return modelList;
 		}
 		
-		//is unfollow user
-		public boolean isUnfollowUser(final int registerid, final int userid) {
+		//unfollower user
+		public boolean isUnfollowUser(final int registerId, final int userId) {
 		    try {
+		        // Get followingId and followerId
 		        Integer followingId = template.queryForObject(
-		            "SELECT fwing.followingid FROM followingmaster fwing " +
-		            "INNER JOIN followerfollowingjoin ff ON fwing.followingid = ff.followingid " +
-		            "WHERE fwing.registerid = ? AND ff.registerid = ?",
-		            new Object[] {registerid, userid},
-		            new RowMapper<Integer>() {
-		                @Override
-		                public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-		                    return rs.getInt(1);
-		                }
-		            }
+		            "SELECT followingid FROM followingmaster WHERE registerid = ? AND userid = ?",
+		            new Object[] { userId, registerId },
+		            Integer.class
 		        );
+		        
 
-		        if (followingId != null) {
-		            int rowsDeleted = template.update("DELETE FROM followerfollowingjoin WHERE registerid = ? AND followingid = ?", userid, followingId);		
-		            if (rowsDeleted > 0) {
-		                rowsDeleted = template.update("DELETE FROM followingmaster WHERE registerid = ? AND followingid = ?", registerid, followingId);
-		                return rowsDeleted > 0;
-		            }
+		        Integer followerId = template.queryForObject(
+		            "SELECT followerid FROM followermaster WHERE registerid = ? AND userid = ?",
+		            new Object[] { registerId, userId },
+		            Integer.class
+		        );
+		        
+		        
+		        
+
+		        
+		        // Check if both IDs are present
+		        if (followingId != null && followerId != null) {
+		        	System.out.println("present");
+		            // Delete from followingmaster
+		            int followingDeleted = template.update("DELETE FROM followingmaster WHERE followingid = ?", followingId);
+		            // Delete from followermaster
+		            int followerDeleted = template.update("DELETE FROM followermaster WHERE followerid = ?", followerId);
+		            // Delete from followerfollowingjoin
+		            int joinDeleted1 = template.update("DELETE FROM followerfollowingjoin WHERE followerid = ?", followerId);
+		            int joinDeleted2 = template.update("DELETE FROM followerfollowingjoin WHERE followingid = ?", followingId);
+
+		            // Check if at least one deletion was successful
+		            return (followingDeleted > 0 || followerDeleted > 0 || joinDeleted1 > 0 || joinDeleted2 > 0);
+		        } else {
+		            return false; // IDs not found
 		        }
-		        return false;
+
 		    } catch (Exception ex) {
-		        return false;
+		        ex.printStackTrace(); // Log the exception for debugging
+		        return false; // Return false on any exception
 		    }
 		}
-
-
-		
-
 
 
 //update user data
@@ -302,28 +311,77 @@ public UserInfoModel isgetAllDatauser(final int registerid) {
 	
 	
 			}
-}
+
 	
+
+//follow the another user
+			public boolean isFollowUser(final int userid, final int registerid) {
+				try {
+					
+					KeyHolder keyHolder = new GeneratedKeyHolder();
+	                template.update(new PreparedStatementCreator() {
+	                    @Override
+	                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+	                        PreparedStatement ps = connection.prepareStatement("insert into followingmaster values('0',?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+	                        ps.setInt(1, userid);
+	                        ps.setInt(2, registerid);
+	                        return ps;
+	                    }
+	                }, keyHolder);
+	              
+	                if (keyHolder.getKey() != null) {
+	             
+	                    int followerid = keyHolder.getKey().intValue();
+	                    template.update(new PreparedStatementCreator() {
+		                    @Override
+		                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+		                        PreparedStatement ps = connection.prepareStatement("insert into followermaster values('0',?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+		                        ps.setInt(1, registerid);
+		                        ps.setInt(2, userid);
+		                        return ps;
+		                    }
+		                }, keyHolder);
+		                if (keyHolder.getKey() != null) {
+		                	int followingid=keyHolder.getKey().intValue();
+		                	int v=template.update("insert into followerfollowingjoin (registerid ,followingid)values(?,?)",registerid,followerid);
+		                	v=template.update("insert into followerfollowingjoin (registerid ,followerid)values(?,?)",userid,followingid);
+		                return (v>0)?true:false;
+		                }
+		                
+		                else {
+		                	return  false;
+		                }
+	                    
+	                } else {
+	                    return false;
+	                }
+	                
+	                
+					
+				}
+				catch(Exception ex) {
+					return false;
+				}
+			}
+			
+			
+//add new registration in table
+public boolean isAddUser(UserInfoModel model) {
+try {
+int v =template.update("insert into userregistrationmaster value('0',?,?,?,?)",model.getName(),model.getEmail(),model.getUsername(),model.getPass());
+return (v > 0) ? true : false;
+} catch (Exception ex) {
+return false;
+}
+}
+
+
+}
+
+
 /*
  
-	//add new registration in table
-	public boolean isAddUser(UserInfoModel model) {
-		
-		
-		try {
-			stmt = conn.prepareStatement("insert into userregistrationmaster value('0',?,?,?,?)");
-			stmt.setString(1, model.getName());
-			stmt.setString(2, model.getEmail());
-			stmt.setString(3, model.getUsername());
-			stmt.setString(4, model.getPass());
-			int a = stmt.executeUpdate();
-			return (a > 0) ? true : false;
-		} catch (Exception ex) {
-			System.out.println("Error is:" + ex);
-			return false;
-		}
-	}
-
+	
 	
 	//get All data for user
 	public UserInfoModel isgetAllDatauser(int registerid) {
@@ -383,141 +441,6 @@ public UserInfoModel isgetAllDatauser(final int registerid) {
 			return -1;
 		}
 	}
-	
-	//follow the another user 
-	int oldfollowerid=0,oldfollowingid=0,olduserid=0;
-	public boolean isFollowUser(int userid, int registerid) {
-		try {
-			int followerid;
-			int followingid;
-			//granted key is return the current data 
-			stmt = conn.prepareStatement("insert into followingmaster values('0',?)",
-					PreparedStatement.RETURN_GENERATED_KEYS);
-			stmt.setInt(1, userid);
-			int g = stmt.executeUpdate();
-			rs = stmt.getGeneratedKeys();
-			if (rs.next()) {
-				followerid = rs.getInt(1);
-				
-				if (g > 0) {
-					stmt = conn.prepareStatement("insert into followermaster values('0',?)",
-							PreparedStatement.RETURN_GENERATED_KEYS);
-					stmt.setInt(1, registerid);
-					int v = stmt.executeUpdate();
-					rs = stmt.getGeneratedKeys();
-					if (rs.next()) {
-						followingid = rs.getInt(1);
-						
-						if (v > 0) {
-							
-							stmt=conn.prepareStatement("select *from followerfollowingjoin where registerid=? and followingid=?");
-							stmt.setInt(1,registerid);
-							stmt.setInt(2, oldfollowerid);
-							rs=stmt.executeQuery();
-							
-							if(rs.next()) {
-								int flowingid=rs.getInt(3);
-								stmt=conn.prepareStatement("select *from followerfollowingjoin where registerid=? and followerid=?");
-								stmt.setInt(1, userid);
-								stmt.setInt(2, oldfollowingid);
-								rs=stmt.executeQuery();
-								
-								if(rs.next()) {
-									System.out.println("===>>you are alredy following<<=====");
-									System.out.println("1:Unfollow");
-									System.out.println("Please 1 For Unfollow");
-									Scanner sc=new Scanner(System.in);
-									int choice=sc.nextInt();
-									switch(choice) {
-									case 1:
-										stmt=conn.prepareStatement("delete from followerfollowingjoin where registerid=? and followingid=?");
-										stmt.setInt(1,registerid);
-										stmt.setInt(2, oldfollowerid);
-						
-										if(stmt.executeUpdate()==1) {
-											System.out.println("Unfollowed");
-										}else {
-											System.out.println("Some problem is there.....");
-										}
-										
-										default:
-											System.out.println("wrong choice");
-									}
-									
-								
-									return false;
-									
-								}
-								
-								else {
-									stmt = conn.prepareStatement("insert into followerfollowingjoin (registerid ,followingid)values(?,?)");
-									stmt.setInt(1, registerid);
-									stmt.setInt(2, followerid);
-									stmt.executeUpdate();
-									stmt = conn.prepareStatement("insert into followerfollowingjoin (registerid ,followerid)values(?,?)");
-									stmt.setInt(1,userid );
-									stmt.setInt(2, followingid);
-									int value = stmt.executeUpdate();
-									if (value > 0) {
-										oldfollowerid=followerid;
-										oldfollowingid=followingid;
-										olduserid=userid;
-										
-										return true;
-									} 
-									else {
-										return false;
-									}
-									
-								}
-							}else {
-				
-								stmt = conn.prepareStatement("insert into followerfollowingjoin (registerid ,followingid)values(?,?)");
-								stmt.setInt(1, registerid);
-								stmt.setInt(2, followerid);
-								stmt.executeUpdate();
-								stmt = conn.prepareStatement("insert into followerfollowingjoin (registerid ,followerid)values(?,?)");
-								stmt.setInt(1,userid );
-								stmt.setInt(2, followingid);
-								int value = stmt.executeUpdate();
-								if (value > 0) {
-									oldfollowerid=followerid;
-									oldfollowingid=followingid;
-									olduserid=userid;
-									
-									return true;
-								} 
-								else {
-									return false;
-								}
-							}
-							
-							
-
-						} else {
-							return false;
-						}
-					}
-					else {
-						return false;
-					}
-
-				} else {
-					return false;
-				}
-			} 
-			else {
-				return false;
-			}
-
-		} catch (Exception ex) {
-			System.out.println("Error is:" + ex);
-			return false;
-
-		}
-	}
-	
-	
 	
 	
 	

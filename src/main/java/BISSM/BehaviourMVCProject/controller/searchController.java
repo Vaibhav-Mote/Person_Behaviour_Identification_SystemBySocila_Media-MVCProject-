@@ -26,30 +26,65 @@ public class searchController {
 	public  String getSearchPage(HttpServletRequest request,Model model) {
 		HttpSession session=request.getSession(false);
 		int registerid=(Integer)session.getAttribute("registerid");
-		List <UserInfoModel>list=userService.isgetAllUsers();
+		List <UserInfoModel>followingList=userService.isgetFollowingList(registerid);
+		 List<UserInfoModel> list = userService.isgetAllUsers();
 		model.addAttribute("list", list);
+		model.addAttribute("followingList", followingList);
 		model.addAttribute("registerid", registerid);
 	    return "search";	
 	}
 	
 	@RequestMapping("search")
-	public void searchByName(HttpServletRequest request,HttpServletResponse response) throws IOException {
-		PrintWriter out = response.getWriter();
-		response.setContentType("text/html");
-		String name = request.getParameter("n");
-		List<UserInfoModel> list = userService.isgetAllUsersInfoByName(name);
-		for (UserInfoModel m : list) {
-			out.println("<div id='pointedDiv'>");
-			out.println("<a id='anker' href='profile.jsp?registerid="+ m.getId()+ "'>");
-			out.println("<div class='followerInfo'>");
-			out.println("<div class='logo'></div>");
-			out.println("<div class='username'>");
-			out.println("<span>" + m.getUsername() + "</span><br>");
-			out.println(m.getName());
-			out.println("</div>");
-			out.println("</div>");
-			out.println("</a>");
-			out.println("</div>");
+	public void searchByName(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	    PrintWriter out = response.getWriter();
+	    response.setContentType("text/html");
+	    String name = request.getParameter("n");
+	    HttpSession session=request.getSession(false);
+	    int registerid=(Integer)session.getAttribute("registerid");
+	    List<UserInfoModel> list = userService.isgetAllUsersInfoByName(name);
+	    List<UserInfoModel> followingList = userService.isgetFollowingList(registerid);
+	    out.println("<div id='pointedDiv'>");
+	    for (UserInfoModel m : list) {
+	    	out.println("<div class='followerInfo' style='display:flex'>");
+	    	 out.println("<div class='logo'></div>");
+	    	 out.println("<a id='anker' href='profileController?registerid=" + m.getId() + "'>");
+	        out.println("<div class='username'>");
+	        out.println("<span>" + m.getUsername() + "</span><br>");
+	        out.println(m.getName());
+	        out.println("</div>"); 
+	        out.println("</a>");  // Closing the profile link
+
+	        // Follow button
+	        boolean flage=false;	      
+	        for(UserInfoModel f : followingList) {
+	        	
+	        	if(m.getId()==f.getId()) {
+	        		flage=true;
+	        		break;
+	        	}
+	        	
+	        }
+	        if(flage) {
+	   
+	        	 out.println("<div class='follows'>");
+	 	        out.println("<a class='ff' id='follow' onclick='follo(" + registerid + ", " + m.getId() + ")'>Following</a>");
+	 	        out.println("</div>");
+
+	 	        out.println("</div>");  // Closing pointedDiv
+	        	
+	        }
+	        else {
+	        
+	        	out.println("<div class='follows'>");
+	 	        out.println("<a class='ff' id='follow' onclick='follow(" + registerid + ", " + m.getId() + ")'>Follow</a>");
+	 	        out.println("</div>");
+	 	        out.println("</div>");  // Closing pointedDiv
+	        }
+	       
+	    }
 	}
-	}
+	
+	
+	
+
 }

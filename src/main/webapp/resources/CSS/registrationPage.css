@@ -3,6 +3,7 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	 font-family: Georgia, serif;
 }
 .maindiv{
 	height: 100%;
@@ -38,3 +39,62 @@
 #submitbtn{
 	margin-left: 40px;
 }
+
+
+
+/*------------------------------------------media query for mobile----------------------*/
+@media only screen and (max-width: 425px) {
+    .maindiv {
+        height: auto;
+        width: 100%;
+        position: relative;
+        background-color: #89dff8;
+         font-family: Georgia, serif;
+    }
+
+    .maindiv .imgdiv {
+        height: auto; 
+        width: 100%; 
+    }
+
+    .imgdiv img {
+        height: auto; 
+        width: 100%; 
+    }
+    .formdiv {
+        width: 90%; 
+        position: relative; 
+        left: auto; 
+        bottom: auto;
+        margin: 20px auto; 
+        padding: 15px; 
+    }
+
+    #registerlogo {
+        padding-left: 0;
+        text-align: center;
+    }
+
+    #submitbtn {
+        margin-left: 0;
+        display: block; 
+        margin-top: 10px; 
+        width: 100%;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-group label {
+        display: block; 
+        margin-bottom: 5px; 
+    }
+    .form-group input {
+        width: 100%; 
+    }
+
+    .form-group span {
+        display: block; 
+        margin-top: 5px; 
+    }
+}
+

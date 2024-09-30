@@ -23,21 +23,25 @@
 	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
 	crossorigin="anonymous"></script>
  
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
 </head>
 <body>
 <body>
     <div class="maindiv">
     <img id="homeimg" src="resources/asset/home.jpg">
+    <div class="text">
     <h1 id="blinking-text" >Human Behavior <br>Identification By <br>Social Media-
     According to <br>Like Post and Comments
     </h1>
+    </div>
     <img id="socialMediaLog" src="resources/asset/socillogo.png">
     
    <div class="menus">
     <ul>
     <li>
     <a href="loginpage">Login </a>
-   <a href="registrationPage">Admin</a>
+   <a href="adminLoginn">Admin</a>
     </li>
     </ul>
     </div>

@@ -25,41 +25,48 @@ document.addEventListener('DOMContentLoaded', function () {
     
   
    */
-
 function register() {
-	var user = document.getElementById("name").value;
-	var email = document.getElementById("email").value;
-	var username = document.getElementById("username").value;
-	var password = document.getElementById("password").value;
-	var btn = document.getElementById("submitbtn");
+    var user = document.getElementById("name").value;
+    var email = document.getElementById("email").value;
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+    var btn = document.getElementById("submitbtn");
 
-
-	if (!validname(user)) {
-		alert("Please Enter Alphabates only");
-		return false;
-	}
-	else if (!validemail(email)) {
-		alert("invalid email");
-		return false;
-	} 
-	else if(username==""){
-		alert("username is null");
-		return false;
-	}
-	else if(password=="") {
-		alert("Password is null")
-		return false;
-	}else{
-		return true;
-	}
-
+    if (!validname(user)) {
+        alert("Please enter alphabets only");
+        return false;
+    } else if (!validemail(email)) {
+        alert("Invalid email");
+        return false;
+    } else if (!validusername(username)) {
+        alert("Username cannot contain spaces and must not be empty");
+        return false;
+    } else if (!validpassword(password)) {
+        alert("Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one digit, and one special character");
+        return false;
+    } else {
+        return true;
+    }
 }
+
 function validname(name) {
-	let pattern = /^[a-zA-Z]+$/;
-	return pattern.test(name);
-}
-function validemail(email) {
-	let pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-	return pattern.test(email);
+    let pattern = /^[a-zA-Z]+$/;
+    return pattern.test(name);
 }
 
+function validemail(email) {
+    let pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return pattern.test(email);
+}
+
+function validusername(username) {
+    // Username should not be empty and must not contain spaces
+    let pattern = /^[a-zA-Z0-9_]+$/;
+    return username.trim() !== "" && pattern.test(username);
+}
+
+function validpassword(password) {
+    // Password must be at least 8 characters long and include upper/lower case letters, digits, and special characters
+    let pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return pattern.test(password);
+}

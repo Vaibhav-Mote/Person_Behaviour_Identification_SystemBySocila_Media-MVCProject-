@@ -3,6 +3,7 @@
 	<name>BehaviourMVCProject</name>
 	<comment></comment>
 	<projects>
+		<project>HousePricePredictionAppMVC</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

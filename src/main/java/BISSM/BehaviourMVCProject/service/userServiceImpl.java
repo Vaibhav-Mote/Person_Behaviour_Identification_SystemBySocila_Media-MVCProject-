@@ -55,11 +55,16 @@ public List<UserInfoModel> isgetAllUsersInfoByName(String name) {
 	return userRepo.isgetAllUsersInfoByName(name);
 }
 
-/*	
+public boolean isFollowUser(int userid,int registerid) {
+	return userRepo.isFollowUser(userid, registerid);
+}
+ 
 public boolean isAddUser(UserInfoModel model) {
-		return userRepo.isAddUser(model);
-	}
-    
+	return userRepo.isAddUser(model);
+}
+
+/*	
+
 
 public List isSearchUser(String username) {
 	return userRepo.isSearchUser(username);
@@ -68,10 +73,6 @@ public int gerUserRegistrationid(String username) {
 	return userRepo.gerUserRegistrationid(username);
 }
 
-public boolean isFollowUser(int userid,int registerid) {
-	return userRepo.isFollowUser(userid, registerid);
-}
- 
 
 public boolean forgetPassward(String oldPass,String newPass,int rid) {
 	return userRepo.forgetPassward(oldPass, newPass, rid);
